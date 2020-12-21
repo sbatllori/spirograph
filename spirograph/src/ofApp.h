@@ -1,15 +1,49 @@
 #pragma once
 
-#include "Spirograph.h"
 #include "ofMain.h"
 
-struct Layer {
-  soo::Spirograph spirograph_;
-  ofVec3f previous_brush_position_{0, 0, 0};
-  std::function<void(const Layer&)> draw_ = [](const Layer&) {};
+class Spirograph {
+ public:
+  Spirograph(const float ring_radius, const float wheel_radius,
+             const int num_corners,
+             const std::function<void()>& drawing_settings)
+      : num_corners_(num_corners), drawing_settings_(drawing_settings) {
+    root_.setGlobalPosition({0, 0, 0});
 
-  void draw() const { draw_(*this); }
+    ring_.setParent(root_);
+    ring_.setPosition({ring_radius, 0, 0});
+
+    wheel_.setParent(ring_);
+    wheel_.setPosition({wheel_radius, 0, 0});
+  }
+
+  void update() {
+    previous_brush_position_ = wheel_.getGlobalPosition();
+    root_.rotateDeg(-1.f, {0, 0, 1});
+    ring_.rotateDeg(num_corners_, {0, 0, 1});
+  }
+
+  void draw() const {
+    drawing_settings_();
+    ofDrawLine(previous_brush_position_, wheel_.getGlobalPosition());
+  }
+
+ private:
+  int num_corners_;
+  ofNode root_;
+  ofNode ring_;
+  ofNode wheel_;
+  ofVec3f previous_brush_position_;
+  std::function<void()> drawing_settings_;
 };
+
+using SpirographPtr = std::unique_ptr<Spirograph>;
+inline SpirographPtr MakeSpirographPtr(
+    const float ring_radius, const float wheel_radius, const int num_corners,
+    const std::function<void()>& drawing_settings) {
+  return std::make_unique<Spirograph>(ring_radius, wheel_radius, num_corners,
+                                      drawing_settings);
+}
 
 class ofApp : public ofBaseApp {
  public:
@@ -19,6 +53,5 @@ class ofApp : public ofBaseApp {
   void keyPressed(int key);
 
  private:
-  bool init_cicle_ = true;
-  std::vector<Layer> layers_;
+  std::vector<SpirographPtr> model_;
 };
