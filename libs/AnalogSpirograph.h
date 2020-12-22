@@ -67,6 +67,7 @@ class Spirograph {
     // Setup global geometric spirograph parameters
     center_ = ring_->node_.getGlobalPosition();
     brush_origin_ = brush_->node_.getGlobalPosition();
+    previous_brush_position_ = brush_origin_;
   }
 
   void Update() {
@@ -104,6 +105,8 @@ class Spirograph {
     brush_->Draw();
     ofPopMatrix();
   }
+
+  const auto& done() const { return done_; }
 
  private:
   DiskPtr ring_;

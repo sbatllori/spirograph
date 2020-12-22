@@ -2,6 +2,9 @@
 
 #include "AnalogSpirograph.h"
 #include "ofMain.h"
+#include "ofxXmlSettings.h"
+
+using SpirographSet = std::vector<soo::analog::Spirograph>;
 
 class ofApp : public ofBaseApp {
  public:
@@ -11,5 +14,6 @@ class ofApp : public ofBaseApp {
   void keyPressed(int key);
 
  private:
-  std::vector<soo::analog::Spirograph> model_;
+  SpirographSet* active_set_;
+  std::vector<SpirographSet> model_;
 };
