@@ -1,0 +1,22 @@
+<model>
+    <set>
+        <ring>96</ring>
+        <wheel>84</wheel>
+        <color>
+            <r>255</r>
+            <g>0</g>
+            <b>100</b>
+            <a>255</a>
+        </color>
+        <rotation>1</rotation>
+        <scale>20</scale>
+        <brush><radius>1</radius></brush>
+        <brush><radius>2</radius></brush>
+        <brush><radius>3</radius></brush>
+        <brush><radius>4</radius></brush>
+        <brush><radius>5</radius></brush>
+        <brush><radius>6</radius></brush>
+        <brush><radius>7</radius></brush>
+        <brush><radius>8</radius></brush>
+    </set>
+</model>

@@ -6,4 +6,9 @@ build*/
 
 # OF project
 obj/
-bin/
+
+# Ignore all in bin but config
+*/bin/*
+!*/bin/data/
+*/bin/data/*
+!*/bin/data/config/

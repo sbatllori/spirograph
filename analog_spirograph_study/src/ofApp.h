@@ -14,6 +14,10 @@ class ofApp : public ofBaseApp {
   void keyPressed(int key);
 
  private:
+  void InitSpirographFromConfig();
+
+ private:
+  int config_id_ = 1;
   SpirographSet* active_set_;
   std::vector<SpirographSet> model_;
 };
