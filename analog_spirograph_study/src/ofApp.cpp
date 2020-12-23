@@ -13,6 +13,68 @@ void ofApp::Reset() {
   ResetParamsText();
 }
 
+//--------------------------------------------------------------
+void ofApp::setup() {
+  ofSetFrameRate(6000);
+  ofSetCircleResolution(72);
+  ofSetBackgroundAuto(true);
+
+  config_id_ = 0;
+  bg_color_ = ofColor(245, 242, 235);
+  font_.load("Batang.ttf", 22, true, true, true);
+
+  Reset();
+}
+
+//--------------------------------------------------------------
+void ofApp::update() {
+  //  soo::SaveFrame(ofGetFrameNum());
+
+  if (!model_.empty()) {
+    // Remove each done spirograph from the active set of spirographs
+    if (!active_set_->empty()) {
+      active_set_->erase(
+          std::remove_if(
+              active_set_->begin(), active_set_->end(),
+              [](const auto& spirograph) { return spirograph.done(); }),
+          active_set_->end());
+    }
+
+    // If the active set of spirographs is empty (i.e. all the spirographs are
+    // done), set the next set of spirographs (if any) as the active one
+    if (active_set_->empty()) {
+      model_.pop_back();
+      if (!model_.empty()) active_set_ = &(model_.back());
+    }
+
+    // Update all the spirographs of the active set of spirographs
+    for (auto& spirograph : *active_set_) spirograph.Update();
+  }
+}
+
+//--------------------------------------------------------------
+void ofApp::draw() {
+  if (!model_.empty()) {
+    DrawModel();
+    DrawParamsText();
+  }
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key) {
+  if (key == 's') {
+    soo::SaveFrame();
+  }
+  if (key == 'n') {
+    config_id_++;
+    Reset();
+  }
+  if (key == 'p') {
+    config_id_--;
+    Reset();
+  }
+}
+
 void ofApp::ResetConfig() {
   const std::string path = ConfigPath(config_id_);
   std::cout << "[INFO] Loading config: " << path << std::endl;
@@ -101,7 +163,8 @@ void ofApp::DrawModel() {
     ofTranslate(ofGetWidth() / 2.f, ofGetHeight() / 3.f);
 
     ofSetLineWidth(2);
-    for (auto& spirograph : *active_set_) spirograph.Draw();
+    //    for (auto& spirograph : *active_set_) spirograph.Draw();
+    for (auto& spirograph : *active_set_) spirograph.DrawDisks();
   }
   ofPopMatrix();
 }
@@ -126,66 +189,4 @@ void ofApp::DrawParamsText() {
     }
   }
   ofPopMatrix();
-}
-
-//--------------------------------------------------------------
-void ofApp::setup() {
-  ofSetFrameRate(6000);
-  ofSetCircleResolution(72);
-  ofSetBackgroundAuto(false);
-
-  config_id_ = 0;
-  bg_color_ = ofColor(245, 242, 235);
-  font_.load("Batang.ttf", 22, true, true, true);
-
-  Reset();
-}
-
-//--------------------------------------------------------------
-void ofApp::update() {
-  //  soo::SaveFrame(ofGetFrameNum());
-
-  if (!model_.empty()) {
-    // Remove each done spirograph from the active set of spirographs
-    if (!active_set_->empty()) {
-      active_set_->erase(
-          std::remove_if(
-              active_set_->begin(), active_set_->end(),
-              [](const auto& spirograph) { return spirograph.done(); }),
-          active_set_->end());
-    }
-
-    // If the active set of spirographs is empty (i.e. all the spirographs are
-    // done), set the next set of spirographs (if any) as the active one
-    if (active_set_->empty()) {
-      model_.pop_back();
-      if (!model_.empty()) active_set_ = &(model_.back());
-    }
-
-    // Update all the spirographs of the active set of spirographs
-    for (auto& spirograph : *active_set_) spirograph.Update();
-  }
-}
-
-//--------------------------------------------------------------
-void ofApp::draw() {
-  if (!model_.empty()) {
-    DrawModel();
-    DrawParamsText();
-  }
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key) {
-  if (key == 's') {
-    soo::SaveFrame();
-  }
-  if (key == 'n') {
-    config_id_++;
-    Reset();
-  }
-  if (key == 'p') {
-    config_id_--;
-    Reset();
-  }
 }

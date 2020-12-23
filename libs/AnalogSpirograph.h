@@ -92,14 +92,28 @@ class Spirograph {
     }
   }
 
-  void DrawDisks() const {
-    ofNoFill();
+  void DrawDisks() {
+    const auto& brush_position = brush_->node_.getGlobalPosition();
 
+    ofPushMatrix();
+    drawing_settings_();
+    mechanics_path_.curveTo(brush_position);
+    mechanics_path_.setFilled(false);
+    mechanics_path_.setStrokeColor(ofColor::orange);
+    mechanics_path_.setStrokeWidth(5);
+    mechanics_path_.draw();
+    ofPopMatrix();
+
+    ofNoFill();
     ofPushMatrix();
     drawing_settings_();
     ring_->Draw();
     wheel_->Draw();
     brush_->Draw();
+
+    ofFill();
+    ofSetColor(ofColor::orange);
+    ofDrawCircle(brush_position, 5.f);
     ofPopMatrix();
   }
 
@@ -116,6 +130,8 @@ class Spirograph {
   std::function<void()> drawing_settings_;
 
   bool done_ = false;
+
+  ofPath mechanics_path_;
 };
 
 }  // namespace analog

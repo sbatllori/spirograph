@@ -6,6 +6,7 @@ build*/
 
 # OF project
 obj/
+scripts/
 
 # Ignore all in bin but config
 */bin/*
