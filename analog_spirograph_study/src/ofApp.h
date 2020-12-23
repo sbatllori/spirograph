@@ -6,6 +6,17 @@
 
 using SpirographSet = std::vector<soo::analog::Spirograph>;
 
+struct ParamsText {
+  std::string str_;
+  ofColor color_;
+  ofRectangle bbox_;
+
+  ParamsText() = default;
+  ParamsText(const std::string& str, const ofColor& color,
+             const ofRectangle& bbox)
+      : str_(str), color_(color), bbox_(bbox) {}
+};
+
 class ofApp : public ofBaseApp {
  public:
   void setup();
@@ -14,7 +25,14 @@ class ofApp : public ofBaseApp {
   void keyPressed(int key);
 
  private:
+  void Reset();
+
+  void ResetConfig();
   void ResetModel();
+  void ResetParamsText();
+
+  void DrawModel();
+  void DrawParamsText();
 
  private:
   ofColor bg_color_;
@@ -24,4 +42,10 @@ class ofApp : public ofBaseApp {
 
   SpirographSet* active_set_;
   std::vector<SpirographSet> model_;
+
+  ofTrueTypeFont font_;
+  std::vector<ParamsText> params_texts_;
+  float const kBoxOuterMargin_ = 20.f;
+  float const kBoxInnerMargin_ = 20.f;
+  ofRectangle box_;
 };

@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "soo_export.h"
 
 namespace {
 std::string ConfigPath(const int id) {
@@ -6,14 +7,23 @@ std::string ConfigPath(const int id) {
 }
 }  // namespace
 
-void ofApp::ResetModel() {
-  // Load the config
+void ofApp::Reset() {
+  ResetConfig();
+  ResetModel();
+  ResetParamsText();
+}
+
+void ofApp::ResetConfig() {
   const std::string path = ConfigPath(config_id_);
   std::cout << "[INFO] Loading config: " << path << std::endl;
   config_ = soo::Config(path);
+}
 
-  // Reset the model with the loaded config data
+void ofApp::ResetModel() {
   model_.clear();
+
+  // Parse the config to get the relevant parameters for the model generation,
+  // i.e. parameters for each spirograph set
   for (const auto& set : config_.model_.sets_) {
     SpirographSet spirograph_set;
     for (const auto& brush : set.brushes_) {
@@ -33,20 +43,108 @@ void ofApp::ResetModel() {
   ofBackground(bg_color_);
 }
 
+void ofApp::ResetParamsText() {
+  params_texts_.clear();
+
+  // Parse the config to get the relevant parameters for the text generation
+  // - string holding the parameters of a set
+  // - color of the set to display the text with
+  // - bounding box of the string to place the text accordingly
+  for (const auto& set : config_.model_.sets_) {
+    std::string str = "";
+    str += std::to_string(int(set.ring_)) + "\t";
+    str += std::to_string(int(set.wheel_)) + "\t";
+
+    for (const auto& brush : set.brushes_) {
+      str += std::to_string(int(brush)) + "-";
+    }
+    str.pop_back();
+
+    params_texts_.emplace_back(str, set.color_,
+                               font_.getStringBoundingBox(str, 0, 0));
+  }
+
+  // Define the box enclosing the parameters text
+  box_.x = std::min_element(params_texts_.begin(), params_texts_.end(),
+                            [](const auto& left, const auto& right) {
+                              return left.bbox_.x < right.bbox_.x;
+                            })
+               ->bbox_.x;
+
+  box_.y = std::min_element(params_texts_.begin(), params_texts_.end(),
+                            [](const auto& left, const auto& right) {
+                              return left.bbox_.y < right.bbox_.y;
+                            })
+               ->bbox_.y;
+
+  box_.width = std::max_element(params_texts_.begin(), params_texts_.end(),
+                                [](const auto& left, const auto& right) {
+                                  return left.bbox_.width < right.bbox_.width;
+                                })
+                   ->bbox_.width;
+
+  box_.height = 0;
+  std::for_each(params_texts_.begin(), params_texts_.end(),
+                [this](const auto& params_text) {
+                  box_.height += params_text.bbox_.height;
+                });
+
+  box_.y -= kBoxOuterMargin_;
+  box_.width += 2 * kBoxOuterMargin_;
+  box_.height += 2 * kBoxOuterMargin_;
+  box_.height += (params_texts_.size() - 1) * kBoxInnerMargin_;
+}
+
+void ofApp::DrawModel() {
+  ofPushMatrix();
+  {
+    ofTranslate(ofGetWidth() / 2.f, ofGetHeight() / 3.f);
+
+    ofSetLineWidth(2);
+    for (auto& spirograph : *active_set_) spirograph.Draw();
+  }
+  ofPopMatrix();
+}
+
+void ofApp::DrawParamsText() {
+  ofPushMatrix();
+  {
+    ofTranslate((ofGetWidth() - box_.width) / 2.f,
+                2.2f * ofGetHeight() / 3.f - box_.height / 2.f);
+
+    // Draw the box
+    ofNoFill();
+    ofSetColor(0);
+    ofDrawRectangle(box_);
+
+    // Draw the parameters inside the box
+    for (unsigned long i{0}; i < params_texts_.size(); i++) {
+      const auto& params_text = params_texts_[i];
+      ofSetColor(params_text.color_);
+      font_.drawString(params_text.str_, kBoxOuterMargin_,
+                       i * (params_text.bbox_.height + kBoxInnerMargin_));
+    }
+  }
+  ofPopMatrix();
+}
+
 //--------------------------------------------------------------
 void ofApp::setup() {
   ofSetFrameRate(6000);
   ofSetCircleResolution(72);
   ofSetBackgroundAuto(false);
 
-  config_id_ = 1;
+  config_id_ = 0;
   bg_color_ = ofColor(245, 242, 235);
+  font_.load("Batang.ttf", 22, true, true, true);
 
-  ResetModel();
+  Reset();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
+  //  soo::SaveFrame(ofGetFrameNum());
+
   if (!model_.empty()) {
     // Remove each done spirograph from the active set of spirographs
     if (!active_set_->empty()) {
@@ -72,26 +170,22 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
   if (!model_.empty()) {
-    ofPushMatrix();
-    ofTranslate(ofGetWidth() / 2.f, ofGetHeight() / 3.f);
-    ofSetLineWidth(2);
-    for (auto& spirograph : *active_set_) spirograph.Draw();
-    ofPopMatrix();
+    DrawModel();
+    DrawParamsText();
   }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
   if (key == 's') {
-    glReadBuffer(GL_FRONT);
-    ofSaveScreen("screenshot_" + ofGetTimestampString() + ".png");
+    soo::SaveFrame();
   }
   if (key == 'n') {
     config_id_++;
-    ResetModel();
+    Reset();
   }
   if (key == 'p') {
     config_id_--;
-    ResetModel();
+    Reset();
   }
 }
