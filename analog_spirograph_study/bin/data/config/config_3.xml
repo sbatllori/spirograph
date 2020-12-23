@@ -8,11 +8,16 @@
             <b>0</b>
             <a>255</a>
         </color>
-        <rotation>30</rotation>
-        <move>0</move>
-        <scale>20</scale>
-        <brush><radius>1</radius></brush>
-        <brush><radius>7</radius></brush>
+        <rotation>
+            <static>30</static>
+            <dynamic>0</dynamic>
+        </rotation>
+        <brush>
+            <radius>1</radius>
+        </brush>
+        <brush>
+            <radius>7</radius>
+        </brush>
     </set>
     <set>
         <ring>96</ring>
@@ -23,13 +28,24 @@
             <b>100</b>
             <a>255</a>
         </color>
-        <rotation>30</rotation>
-        <move>0</move>
-        <scale>20</scale>
-        <brush><radius>2</radius></brush>
-        <brush><radius>3</radius></brush>
-        <brush><radius>4</radius></brush>
-        <brush><radius>5</radius></brush>
-        <brush><radius>6</radius></brush>
+        <rotation>
+            <static>30</static>
+            <dynamic>0</dynamic>
+        </rotation>
+        <brush>
+            <radius>2</radius>
+        </brush>
+        <brush>
+            <radius>3</radius>
+        </brush>
+        <brush>
+            <radius>4</radius>
+        </brush>
+        <brush>
+            <radius>5</radius>
+        </brush>
+        <brush>
+            <radius>6</radius>
+        </brush>
     </set>
 </model>

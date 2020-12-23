@@ -1,73 +1,48 @@
 #include "ofApp.h"
 
-void ofApp::InitSpirographFromConfig() {
+namespace {
+std::string ConfigPath(const int id) {
+  return "config/config_" + std::to_string(id) + ".xml";
+}
+}  // namespace
+
+void ofApp::ResetModel() {
+  // Load the config
+  const std::string path = ConfigPath(config_id_);
+  std::cout << "[INFO] Loading config: " << path << std::endl;
+  config_ = soo::Config(path);
+
+  // Reset the model with the loaded config data
   model_.clear();
-  ofBackground(245, 242, 235);
-
-  ofxXmlSettings config;
-  if (config.loadFile("config/config_" + std::to_string(config_id_) + ".xml")) {
-    config.pushTag("model");
-    {
-      // Load multiple sets for one model
-      const int num_sets = config.getNumTags("set");
-      for (int k{0}; k < num_sets; k++) {
-        config.pushTag("set", k);
-        {
-          // Load set parameters
-          float ring = config.getValue("ring", 0);
-          float wheel = config.getValue("wheel", 0);
-          const float rotation = config.getValue("rotation", 30);
-          const float move = config.getValue("move", 0);
-          const float scale = config.getValue("scale", 20);
-
-          ofColor color;
-          config.pushTag("color");
-          {
-            color.r = config.getValue("r", 0);
-            color.g = config.getValue("g", 0);
-            color.b = config.getValue("b", 0);
-            color.a = config.getValue("a", 255);
-          }
-          config.popTag();
-
-          SpirographSet set;
-          // Load multiple brushes for one set
-          const int num_brushes = config.getNumTags("brush");
-          for (int i{0}; i < num_brushes; i++) {
-            config.pushTag("brush", i);
-            {
-              // Load brush parameters
-              float brush = config.getValue("radius", 1);
-
-              // Add brush to set
-              set.emplace_back(
-                  ring, wheel, brush, scale, [brush, color, rotation, move]() {
-                    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-                    ofRotateZDeg(rotation + 3.f * move * brush);
-
-                    ofSetColor(color);
-                    ofSetLineWidth(2);
-                  });
-            }
-            config.popTag();
-          }
-          // Add set to model
-          model_.push_back(set);
-        }
-        config.popTag();
-      }
+  for (const auto& set : config_.model_.sets_) {
+    SpirographSet spirograph_set;
+    for (const auto& brush : set.brushes_) {
+      spirograph_set.emplace_back(set.ring_, set.wheel_, brush, [set, brush]() {
+        ofRotateZDeg(set.static_rotation_ +
+                     3.f * set.dynamic_rotation_ * brush);
+        ofSetColor(set.color_);
+      });
     }
-    config.popTag();
+    model_.push_back(spirograph_set);
   }
 
+  // Reset the active set
   active_set_ = &(model_.back());
+
+  // Reset the background
+  ofBackground(bg_color_);
 }
 
 //--------------------------------------------------------------
 void ofApp::setup() {
   ofSetFrameRate(6000);
   ofSetCircleResolution(72);
-  InitSpirographFromConfig();
+  ofSetBackgroundAuto(false);
+
+  config_id_ = 1;
+  bg_color_ = ofColor(245, 242, 235);
+
+  ResetModel();
 }
 
 //--------------------------------------------------------------
@@ -96,8 +71,13 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-  if (!model_.empty())
+  if (!model_.empty()) {
+    ofPushMatrix();
+    ofTranslate(ofGetWidth() / 2.f, ofGetHeight() / 3.f);
+    ofSetLineWidth(2);
     for (auto& spirograph : *active_set_) spirograph.Draw();
+    ofPopMatrix();
+  }
 }
 
 //--------------------------------------------------------------
@@ -108,10 +88,10 @@ void ofApp::keyPressed(int key) {
   }
   if (key == 'n') {
     config_id_++;
-    InitSpirographFromConfig();
+    ResetModel();
   }
   if (key == 'p') {
     config_id_--;
-    InitSpirographFromConfig();
+    ResetModel();
   }
 }

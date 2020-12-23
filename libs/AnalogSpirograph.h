@@ -25,10 +25,10 @@ class Spirograph {
  public:
   Spirograph() = default;
   Spirograph(float ring_perimeter, float wheel_perimeter, float brush_radius,
-             const float scale_factor,
              const std::function<void()>& drawing_settings)
       : drawing_settings_(drawing_settings) {
     // Scale the input parameters accordingly
+    const float scale_factor = 15.f;
     ring_perimeter *= scale_factor;
     wheel_perimeter *= scale_factor;
     brush_radius = scale_factor / 3.2f * (brush_radius + 5);
@@ -84,8 +84,6 @@ class Spirograph {
   }
 
   void Draw() const {
-    ofSetBackgroundAuto(false);
-
     if (!done_) {
       ofPushMatrix();
       drawing_settings_();
@@ -95,7 +93,6 @@ class Spirograph {
   }
 
   void DrawDisks() const {
-    ofSetBackgroundAuto(true);
     ofNoFill();
 
     ofPushMatrix();

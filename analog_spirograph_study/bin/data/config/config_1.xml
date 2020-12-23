@@ -8,21 +8,48 @@
             <b>0</b>
             <a>255</a>
         </color>
-        <rotation>30</rotation>
-        <move>0</move>
-        <scale>20</scale>
-        <brush><radius>1</radius></brush>
-        <brush><radius>3</radius></brush>
-        <brush><radius>5</radius></brush>
-        <brush><radius>7</radius></brush>
-        <brush><radius>9</radius></brush>
-        <brush><radius>11</radius></brush>
-        <brush><radius>13</radius></brush>
-        <brush><radius>15</radius></brush>
-        <brush><radius>17</radius></brush>
-        <brush><radius>19</radius></brush>
-        <brush><radius>21</radius></brush>
-        <brush><radius>23</radius></brush>
-        <brush><radius>25</radius></brush>
+        <rotation>
+            <static>30</static>
+            <dynamic>0</dynamic>
+        </rotation>
+        <brush>
+            <radius>1</radius>
+        </brush>
+        <brush>
+            <radius>3</radius>
+        </brush>
+        <brush>
+            <radius>5</radius>
+        </brush>
+        <brush>
+            <radius>7</radius>
+        </brush>
+        <brush>
+            <radius>9</radius>
+        </brush>
+        <brush>
+            <radius>11</radius>
+        </brush>
+        <brush>
+            <radius>13</radius>
+        </brush>
+        <brush>
+            <radius>15</radius>
+        </brush>
+        <brush>
+            <radius>17</radius>
+        </brush>
+        <brush>
+            <radius>19</radius>
+        </brush>
+        <brush>
+            <radius>21</radius>
+        </brush>
+        <brush>
+            <radius>23</radius>
+        </brush>
+        <brush>
+            <radius>25</radius>
+        </brush>
     </set>
 </model>
