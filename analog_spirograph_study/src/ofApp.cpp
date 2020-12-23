@@ -16,7 +16,8 @@ void ofApp::InitSpirographFromConfig() {
           // Load set parameters
           float ring = config.getValue("ring", 0);
           float wheel = config.getValue("wheel", 0);
-          const float rotation = config.getValue("rotation", 0);
+          const float rotation = config.getValue("rotation", 30);
+          const float move = config.getValue("move", 0);
           const float scale = config.getValue("scale", 20);
 
           ofColor color;
@@ -40,9 +41,9 @@ void ofApp::InitSpirographFromConfig() {
 
               // Add brush to set
               set.emplace_back(
-                  ring, wheel, brush, scale, [brush, color, rotation]() {
+                  ring, wheel, brush, scale, [brush, color, rotation, move]() {
                     ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-                    ofRotateZDeg(30.f + 3.f * rotation * brush);
+                    ofRotateZDeg(rotation + 3.f * move * brush);
 
                     ofSetColor(color);
                     ofSetLineWidth(2);

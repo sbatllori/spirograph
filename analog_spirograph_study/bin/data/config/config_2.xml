@@ -8,7 +8,8 @@
             <b>100</b>
             <a>255</a>
         </color>
-        <rotation>1</rotation>
+        <rotation>30</rotation>
+        <move>1</move>
         <scale>20</scale>
         <brush><radius>1</radius></brush>
         <brush><radius>2</radius></brush>
