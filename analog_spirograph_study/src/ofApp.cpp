@@ -17,20 +17,20 @@ void ofApp::Reset() {
 void ofApp::setup() {
   ofSetFrameRate(6000);
   ofSetCircleResolution(72);
-  ofSetBackgroundAuto(true);
+  ofSetBackgroundAuto(render_mechanics_);
 
   config_id_ = 0;
   bg_color_ = ofColor(245, 242, 235);
-  font_.load("Batang.ttf", 22, true, true, true);
+  font_.load("Batang.ttf", 18, true, true, true);
 
   Reset();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-  //  soo::SaveFrame(ofGetFrameNum());
-
   if (!model_.empty()) {
+    //    soo::SaveFrame(ofGetFrameNum());
+
     // Remove each done spirograph from the active set of spirographs
     if (!active_set_->empty()) {
       active_set_->erase(
@@ -122,6 +122,9 @@ void ofApp::ResetParamsText() {
     }
     str.pop_back();
 
+    str += ", R " + std::to_string(int(set.static_rotation_));
+    str += ":" + std::to_string(int(set.dynamic_rotation_));
+
     params_texts_.emplace_back(str, set.color_,
                                font_.getStringBoundingBox(str, 0, 0));
   }
@@ -160,11 +163,12 @@ void ofApp::ResetParamsText() {
 void ofApp::DrawModel() {
   ofPushMatrix();
   {
-    ofTranslate(ofGetWidth() / 2.f, ofGetHeight() / 3.f);
+    ofTranslate(ofGetWidth() / 2.f, 2.f * ofGetHeight() / 5.f);
+    ofScale(1.5);
 
     ofSetLineWidth(2);
-    //    for (auto& spirograph : *active_set_) spirograph.Draw();
-    for (auto& spirograph : *active_set_) spirograph.DrawDisks();
+    for (auto& spirograph : *active_set_)
+      render_mechanics_ ? spirograph.DrawDisks() : spirograph.Draw();
   }
   ofPopMatrix();
 }
@@ -172,21 +176,26 @@ void ofApp::DrawModel() {
 void ofApp::DrawParamsText() {
   ofPushMatrix();
   {
-    ofTranslate((ofGetWidth() - box_.width) / 2.f,
-                2.2f * ofGetHeight() / 3.f - box_.height / 2.f);
+    ofTranslate(ofGetWidth() / 2.f, 6.f * ofGetHeight() / 7.f);
 
-    // Draw the box
-    ofNoFill();
-    ofSetColor(0);
-    ofDrawRectangle(box_);
+    ofPushMatrix();
+    {
+      ofTranslate(-box_.width / 2, -box_.height / 2);
+      // Draw the box
+      ofNoFill();
+      ofSetColor(0);
+      ofSetLineWidth(2);
+      ofDrawRectangle(box_);
 
-    // Draw the parameters inside the box
-    for (unsigned long i{0}; i < params_texts_.size(); i++) {
-      const auto& params_text = params_texts_[i];
-      ofSetColor(params_text.color_);
-      font_.drawString(params_text.str_, kBoxOuterMargin_,
-                       i * (params_text.bbox_.height + kBoxInnerMargin_));
+      // Draw the parameters inside the box
+      for (unsigned long i{0}; i < params_texts_.size(); i++) {
+        const auto& params_text = params_texts_[i];
+        ofSetColor(params_text.color_);
+        font_.drawString(params_text.str_, kBoxOuterMargin_,
+                         i * (params_text.bbox_.height + kBoxInnerMargin_));
+      }
     }
+    ofPopMatrix();
   }
   ofPopMatrix();
 }

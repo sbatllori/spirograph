@@ -1,7 +1,7 @@
 <model>
     <set>
         <ring>96</ring>
-        <wheel>56</wheel>
+        <wheel>60</wheel>
         <color>
             <r>0</r>
             <g>0</g>
@@ -9,11 +9,11 @@
             <a>255</a>
         </color>
         <rotation>
-            <static>30</static>
+            <static>0</static>
             <dynamic>0</dynamic>
         </rotation>
         <brush>
-            <radius>10</radius>
+            <radius>15</radius>
         </brush>
     </set>
 </model>

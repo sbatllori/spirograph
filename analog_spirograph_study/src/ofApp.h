@@ -35,6 +35,8 @@ class ofApp : public ofBaseApp {
   void DrawParamsText();
 
  private:
+  const bool render_mechanics_ = false;
+
   ofColor bg_color_;
 
   int config_id_;
@@ -45,7 +47,7 @@ class ofApp : public ofBaseApp {
 
   ofTrueTypeFont font_;
   std::vector<ParamsText> params_texts_;
-  float const kBoxOuterMargin_ = 20.f;
-  float const kBoxInnerMargin_ = 20.f;
+  float const kBoxOuterMargin_ = 10.f;
+  float const kBoxInnerMargin_ = 10.f;
   ofRectangle box_;
 };
