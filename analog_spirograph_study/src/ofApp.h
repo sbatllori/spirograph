@@ -25,7 +25,11 @@ class ofApp : public ofBaseApp {
   void keyPressed(int key);
 
  private:
-  void Reset();
+  void Reset() {
+    ResetConfig();
+    ResetModel();
+    ResetParamsText();
+  }
 
   void ResetConfig();
   void ResetModel();

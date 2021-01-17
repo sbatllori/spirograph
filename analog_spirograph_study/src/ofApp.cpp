@@ -7,12 +7,6 @@ std::string ConfigPath(const int id) {
 }
 }  // namespace
 
-void ofApp::Reset() {
-  ResetConfig();
-  ResetModel();
-  ResetParamsText();
-}
-
 //--------------------------------------------------------------
 void ofApp::setup() {
   ofSetFrameRate(6000);
