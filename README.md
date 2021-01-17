@@ -5,7 +5,7 @@ This is a short study of the mechanics of an analog spirograph in order to under
 
 
 ### Study of the Mechanics
-<img src="doc/disks.jpeg" width="50%"> <img src="doc/mechanics.gif" width="41.45%">
+<img src="doc/disks.jpeg" width="54.7%"><img src="doc/mechanics.gif" width="45.3%">
 
 The mechanics of a spirograph are defined by 3 disks:
 + a static disk (the *ring*),
@@ -33,16 +33,16 @@ The mechanics and pieces of the analog spirograph generator have been translated
 
 The following examples show a spirograph composed by a single curve and another one composed by multiple curves:
 
-<img src="doc/example1.png" width="48%"> <img src="doc/example2.png" width="48%">
+<img src="doc/example1.png" width="50%"><img src="doc/example2.png" width="50%">
 
 The parameters used to generate each one of them are contained in the box below the spirograph. Each line defines a set of curves. All the curves in a set are defined by the same ring and wheel, they have the same global origin and relative rotation, plus they are all drawn with the same color. In detail, a line of parameters is represented by:
 ```
 <RING> <WHEEL> <BRUSHES>, R <STATIC_ROTATION>:<DYNAMIC_ROTATION>
 ```
 - `RING`: number of cogwheels of the internal side of the ring. This value is proportional to the perimeter of the ring.
--`WHEEL`: number of cogwheels of the external side of the wheel. This value is proportional to the perimeters of the wheel.
-- `BRUSHES`: list of holes from which to draw a spirograph, fixing the given ring and wheel. This value is proportional to the brush radius, i.e. to the disk representing the brush.
+- `WHEEL`: number of cogwheels of the external side of the wheel. This value is proportional to the perimeters of the wheel.
+- `BRUSHES`: list of holes from which to draw a spirograph, fixing the given ring and wheel. This value is proportional to the brush radius, i.e. to the radius of the disk representing the brush.
 - `STATIC_ROTATION`: angle in degrees (0-360) representing the cogwheel of the ring to take as a global starting point.
 - `DYNAMIC_ROTATION`: angle in degrees (0-360) representing the shift of cogwheels in relation to the previous drawn curve. This value only makes sense for sets of more than one curve, since each curve shifts its starting point in relation to the previous one. As an example, if we draw 3 curves and the dynamic rotation is set to 45, each curve will start its path 45 degrees further from the previous one, e.g. if the first curve starts at 0, the second one will start at 45, and the third one at 90.
 
-Is worth mention that the order of the list of parameters matters. The spirographs are drawn in the reverse order of the list, so that the last one is drawn first, the second-to-last is drawn second, etc. This is important since a top spirograph might hide some parts of the bottom spirographs. That way, the order of the parameter list reflects also the priority of the spirographs.
+It is worth mentioning that the order of the list of parameters matters. The spirographs are drawn in the reverse order of the list, so that the last one is drawn first, the second-to-last is drawn second, etc. This is important since a top spirograph might hide some parts of the bottom spirographs. That way, the order of the list of parameters reflects also the priority of the spirographs.
